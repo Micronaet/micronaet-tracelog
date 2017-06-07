@@ -94,7 +94,7 @@ for root, folders, files in os.walk(log_folder):
             
             erp_pool.create({
                 'timestamp': timestamp, 
-                'user_name': username, 
+                'user_name': user_name, 
                 'host_name' : host_name, 
                 'mode' : mode,
                 })

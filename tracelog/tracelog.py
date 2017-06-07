@@ -45,7 +45,7 @@ class TracelogEvent(orm.Model):
     _name = 'tracelog.event'
     _description = 'Tracelog event'
     _rec_name = 'timestamp'
-    _order = 'timestamp'
+    _order = 'timestamp desc'
     
     _columns = {
         'timestamp': fields.datetime('Timestamp', required=True),
