@@ -45,6 +45,8 @@ log_folder = config.get('log', 'folder')
 log_history = config.get('log', 'history')
 activity_folder = config.get('log', 'activity')
 
+log_extension = 'log' # TODO put in cfg file?
+tot_items = 4 #TODO put in cfg file?
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
@@ -68,6 +70,34 @@ erp_pool = get_erp_pool(URL, database, username, password)
 # -----------------------------------------------------------------------------
 # Read log folder
 # -----------------------------------------------------------------------------
-
-
+for root, folders, files in os.walk(log_folder): 
+    for f in files:
+        if '.' not in f or f.split('.')[-1].lower() != log_extension:
+            continue #TODO log
+        fullname = os.path.join(log_folder, f)    
+        for line in open(fullname, 'r'):
+            field_list = line.split(';')
+            if len(field_list) != tot_items:
+                continue #TODO log
+            # Read columns:            
+            user_name = field_list[0].strip()
+            host_name = field_list[1].strip()
+            timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
+            mode = field_list[3].strip()
+            
+            timestamp = '%s/%s/%s%s' % (
+                timestamp[6:10],
+                timestamp[3:5],
+                timestamp[:2],
+                timestamp[10:],              
+                )
+            
+            erp_pool.create({
+                'timestamp': timestamp, 
+                'user_name': username, 
+                'host_name' : host_name, 
+                'mode' : mode,
+                })
+    break # only once!
+                
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

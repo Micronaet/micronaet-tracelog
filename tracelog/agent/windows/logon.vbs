@@ -1,5 +1,5 @@
 rem Library:
-Set wshShell = CreateObject( "WScript.Shell" )
+Set wshShell = CreateObject("WScript.Shell")
 Set objFSO=CreateObject("Scripting.FileSystemObject")
 Set args = Wscript.Arguments
 
@@ -17,7 +17,7 @@ constReading = 1
 constWriting = 2
 
 rem Passed parameters:
-strMode = "ERR"
+strMode = "err"
 On Error Resume next
 strMode = args(0)
 

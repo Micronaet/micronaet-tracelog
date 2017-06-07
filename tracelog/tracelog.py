@@ -48,7 +48,7 @@ class TracelogEvent(orm.Model):
     _order = 'timestamp'
     
     _columns = {
-        'timestamp': fields.date('Timestamp', required=True),
+        'timestamp': fields.datetime('Timestamp', required=True),
         'user_name': fields.char('Username', size=64, required=True),
         'host_name': fields.char('Hostname', size=64, required=True),
         'mode': fields.selection([
