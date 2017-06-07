@@ -18,10 +18,12 @@
 ###############################################################################
 
 {
-    'name': '',
+    'name': 'Tracelog Management',
     'version': '0.1',
-    'category': '',
-    'description': '''        
+    'category': 'Tracelog',
+    'description': '''   
+        Tracelog management:
+           PC and Server access privacy policy
         ''',
     'author': 'Micronaet S.r.l. - Nicola Riolini',
     'website': 'http://www.micronaet.it',
@@ -32,10 +34,10 @@
     'init_xml': [],
     'demo': [],
     'data': [
-        #'security/ir.model.access.csv',    
-        #'_view.xml',
+        'security/ir.model.access.csv',    
+        'tracelog_view.xml',
         ],
     'active': False,
     'installable': True,
-    'auto_install': False,
+    'auto_install': False,    
     }

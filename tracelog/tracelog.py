@@ -26,7 +26,7 @@ import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression, orm
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID, api
+from openerp import SUPERUSER_ID
 from openerp import tools
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round as round
@@ -38,4 +38,28 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 
 _logger = logging.getLogger(__name__)
 
+class TracelogEvent(orm.Model):
+    """ Model name: TracelogEvent
+    """
+    
+    _name = 'tracelog.event'
+    _description = 'Tracelog event'
+    _rec_name = 'timestamp'
+    _order = 'timestamp'
+    
+    _columns = {
+        'timestamp': fields.date('Timestamp', required=True),
+        'user_name': fields.char('Username', size=64, required=True),
+        'host_name': fields.char('Hostname', size=64, required=True),
+        'mode': fields.selection([
+            ('in', 'Log in'),
+            ('out', 'Log out'),
+            ('err', 'Error'),
+            ], 'Mode', required=True),
+        }
+
+    _defaults = {
+        'mode': lambda *x: 'err',
+        }            
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
