@@ -11,6 +11,7 @@
                     <field name="mode" readonly="1" />
                     <field name="user_name" readonly="1" />
                     <field name="host_name" readonly="1" />
+                    <field name="import_id" readonly="1" />
                 </tree>
             </field>
         </record>
@@ -23,6 +24,7 @@
                     <field name="mode" readonly="1" />
                     <field name="user_name" readonly="1" />
                     <field name="host_name" readonly="1" />
+                    <field name="import_id" readonly="1" />
                 </form>
             </field>
         </record>
@@ -32,6 +34,7 @@
             <field name="arch" type="xml">
                 <search string="Tracelog search" version="7.0">        
                     <field name="timestamp" />
+                    <field name="import_id" />
                     <!--<field name="from_timestamp" filter_domain="[('timestamp','&gt;=',self)]"/>
                     <field name="to_timestamp" filter_domain="[('timestamp','&lt;=',self)]"/>-->
                     
@@ -44,6 +47,7 @@
                         <filter name="group_user_name" string="User name" context="{'group_by': 'user_name'}"/>
                         <filter name="group_host_name" string="Host name" context="{'group_by': 'host_name'}"/>
                         <filter name="group_mode" string="Mode" context="{'group_by': 'mode'}"/>
+                        <filter name="group_import" string="Import ID" context="{'group_by': 'import_id'}"/>
                     </group>                
                 </search>
             </field>

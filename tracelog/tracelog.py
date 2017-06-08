@@ -51,6 +51,7 @@ class TracelogEvent(orm.Model):
         'timestamp': fields.datetime('Timestamp', required=True),
         'user_name': fields.char('Username', size=64, required=True),
         'host_name': fields.char('Hostname', size=64, required=True),
+        'import_id': fields.char('Import ID', size=100, required=True),
         'mode': fields.selection([
             ('in', 'Log in'),
             ('out', 'Log out'),

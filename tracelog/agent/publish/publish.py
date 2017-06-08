@@ -23,7 +23,7 @@ import sys
 import ConfigParser
 import erppeek
 from datetime import datetime
-
+import pdb; pdb.set_trace()
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
@@ -49,8 +49,8 @@ parameter = {
     'folder_temp': config.get('log', 'temp'),
     
     # Constant:
-    'log_extension': 'log' # TODO put in cfg file?
-    'tot_items': 4 #TODO put in cfg file?
+    'log_extension': 'log', # TODO put in cfg file?
+    'tot_items': 4, #TODO put in cfg file?
     }
 
 activity_folder = config.get('log', 'activity')
@@ -87,7 +87,7 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
 
     if temp:
         import_id = f        
-        fulltemp = os.path.join(folder['folder_temp'], import_id)
+        fulltemp = os.path.join(parameter['folder_temp'], import_id)
 
         # Delete import_id previous imported line:
         event_ids = erp_pool.search([
@@ -97,9 +97,9 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
             erp_pool.unlink(event_ids)
     else: # normale:
         import_ts_id = datetime.now().strftime('%Y%m%d.%H%M%S.%f')    
-        fullname = os.path.join(folder['folder_log'], f)    
+        fullname = os.path.join(parameter['folder_log'], f)    
         import_id = '%s.%s' % (import_ts_id, f)        
-        fulltemp = os.path.join(folder['folder_temp'], import_id)
+        fulltemp = os.path.join(parameter['folder_temp'], import_id)
         os.rename(fullname, fulltemp)
         
     # Read all temp file line:
@@ -133,7 +133,7 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
             })    
             
     # History the temp file:        
-    fullhistory = os.path.join(folder['folder_history'], import_id)
+    fullhistory = os.path.join(parameter['folder_history'], import_id)
     os.rename(fulltemp, fullhistory)
     return True
     
