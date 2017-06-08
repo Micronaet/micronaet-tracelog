@@ -23,7 +23,7 @@ import sys
 import ConfigParser
 import erppeek
 from datetime import datetime
-import pdb; pdb.set_trace()
+
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
@@ -53,12 +53,22 @@ parameter = {
     'tot_items': 4, #TODO put in cfg file?
     }
 
-activity_folder = config.get('log', 'activity')
-
+activity_file = config.get('log', 'activity')
+activity_log = open(activity_file, 'a') 
 
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
+def log_event(activity_log, event, mode='info'):
+    ''' Log event on file
+    '''
+    activity_log.write('[%s] %s: %s\n' % (
+        mode.lower(),
+        datetime.now(),
+        event,
+        ))
+    return True
+    
 def get_erp_pool(URL, database, username, password):
     ''' Connect to log table in ODOO
     '''
@@ -78,9 +88,6 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
         folder: dict of folder for manage: log, temp and history path
         temp: if f is yet a temp file
     ''' 
-    import os
-    from datetime import datetime
-    
     # Check if is a .log file:
     if '.' not in f or f.split('.')[-1].lower() != parameter['log_extension']:
         return False # not a log file
@@ -143,12 +150,22 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
 URL = 'http://%s:%s' % (hostname, port) 
 erp_pool = get_erp_pool(URL, database, username, password)
 
+log_event(
+    activity_log,
+    'Start publish log event on %s' % URL,
+    )
+    
 # -----------------------------------------------------------------------------
 # Read temp folder
 # -----------------------------------------------------------------------------
 for root, folders, files in os.walk(parameter['folder_temp']):
     for f in files:
         insert_odoo_record(erp_pool, f, parameter, temp=True)
+        log_event(
+            activity_log,
+            'Found temp files: %s' % f,
+            'warning',
+            )    
     break # only once!
 
 # -----------------------------------------------------------------------------
@@ -157,6 +174,15 @@ for root, folders, files in os.walk(parameter['folder_temp']):
 for root, folders, files in os.walk(parameter['folder_log']):
     for f in files:
         insert_odoo_record(erp_pool, f, parameter)
+        log_event(
+            activity_log,
+            'Import log file: %s' % f,
+            )    
     break # only once!
-                
+
+log_event(
+    activity_log,
+    'End publish log event on %s\n' % URL,
+    )
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
