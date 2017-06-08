@@ -22,6 +22,7 @@ import os
 import sys
 import ConfigParser
 import erppeek
+from datetime import datetime
 
 # -----------------------------------------------------------------------------
 #                                Parameters
@@ -41,12 +42,20 @@ database = config.get('XMLRPC', 'database')
 username = config.get('XMLRPC', 'username')
 password = config.get('XMLRPC', 'password')
 
-log_folder = config.get('log', 'folder')
-log_history = config.get('log', 'history')
+parameter = {
+    # Folder:
+    'folder_log': config.get('log', 'folder'),
+    'folder_history': config.get('log', 'history'),
+    'folder_temp': config.get('log', 'temp'),
+    
+    # Constant:
+    'log_extension': 'log' # TODO put in cfg file?
+    'tot_items': 4 #TODO put in cfg file?
+    }
+
 activity_folder = config.get('log', 'activity')
 
-log_extension = 'log' # TODO put in cfg file?
-tot_items = 4 #TODO put in cfg file?
+
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
@@ -61,6 +70,73 @@ def get_erp_pool(URL, database, username, password):
         )   
     return erp.TracelogEvent
 
+def insert_odoo_record(erp_pool, f, parameter, temp=False):
+    ''' Get file name (and mode: temp or not) and import as ODOO event, after
+        put in history folder
+        erp_pool: object ODOO on web
+        f: filename (not full name)
+        folder: dict of folder for manage: log, temp and history path
+        temp: if f is yet a temp file
+    ''' 
+    import os
+    from datetime import datetime
+    
+    # Check if is a .log file:
+    if '.' not in f or f.split('.')[-1].lower() != parameter['log_extension']:
+        return False # not a log file
+
+    if temp:
+        import_id = f        
+        fulltemp = os.path.join(folder['folder_temp'], import_id)
+
+        # Delete import_id previous imported line:
+        event_ids = erp_pool.search([
+            ('import_id', '=', import_id),
+            ])
+        if event_ids:
+            erp_pool.unlink(event_ids)
+    else: # normale:
+        import_ts_id = datetime.now().strftime('%Y%m%d.%H%M%S.%f')    
+        fullname = os.path.join(folder['folder_log'], f)    
+        import_id = '%s.%s' % (import_ts_id, f)        
+        fulltemp = os.path.join(folder['folder_temp'], import_id)
+        os.rename(fullname, fulltemp)
+        
+    # Read all temp file line:
+    for line in open(fulltemp, 'r'):
+        field_list = line.split(';')
+        if len(field_list) != parameter['tot_items']:
+            continue #TODO log
+            
+        # Read columns:            
+        user_name = field_list[0].strip()
+        host_name = field_list[1].strip()
+        timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
+        mode = field_list[3].strip()
+                    
+        timestamp = '%s-%s-%s %s:%s:%s' % (
+            timestamp[6:10],
+            timestamp[3:5],
+            timestamp[:2],
+            timestamp[11:13],   
+            timestamp[14:16],   
+            timestamp[17:19],   
+            )
+        
+        # Create ODOO record:
+        erp_pool.create({
+            'timestamp': timestamp, 
+            'user_name': user_name, 
+            'host_name' : host_name, 
+            'mode' : mode,
+            'import_id': import_id,
+            })    
+            
+    # History the temp file:        
+    fullhistory = os.path.join(folder['folder_history'], import_id)
+    os.rename(fulltemp, fullhistory)
+    return True
+    
 # -----------------------------------------------------------------------------
 # ERPPEEK Client connection:
 # -----------------------------------------------------------------------------
@@ -68,38 +144,19 @@ URL = 'http://%s:%s' % (hostname, port)
 erp_pool = get_erp_pool(URL, database, username, password)
 
 # -----------------------------------------------------------------------------
+# Read temp folder
+# -----------------------------------------------------------------------------
+for root, folders, files in os.walk(parameter['folder_temp']):
+    for f in files:
+        insert_odoo_record(erp_pool, f, parameter, temp=True)
+    break # only once!
+
+# -----------------------------------------------------------------------------
 # Read log folder
 # -----------------------------------------------------------------------------
-for root, folders, files in os.walk(log_folder): 
+for root, folders, files in os.walk(parameter['folder_log']):
     for f in files:
-        if '.' not in f or f.split('.')[-1].lower() != log_extension:
-            continue #TODO log
-        fullname = os.path.join(log_folder, f)    
-        for line in open(fullname, 'r'):
-            field_list = line.split(';')
-            if len(field_list) != tot_items:
-                continue #TODO log
-            # Read columns:            
-            user_name = field_list[0].strip()
-            host_name = field_list[1].strip()
-            timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
-            mode = field_list[3].strip()
-            
-            timestamp = '%s-%s-%s %s:%s:%s' % (
-                timestamp[6:10],
-                timestamp[3:5],
-                timestamp[:2],
-                timestamp[11:13],   
-                timestamp[14:16],   
-                timestamp[17:19],   
-                )
-            
-            erp_pool.create({
-                'timestamp': timestamp, 
-                'user_name': user_name, 
-                'host_name' : host_name, 
-                'mode' : mode,
-                })
+        insert_odoo_record(erp_pool, f, parameter)
     break # only once!
                 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
