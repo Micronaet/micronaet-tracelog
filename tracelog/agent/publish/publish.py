@@ -85,11 +85,13 @@ for root, folders, files in os.walk(log_folder):
             timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
             mode = field_list[3].strip()
             
-            timestamp = '%s/%s/%s%s' % (
+            timestamp = '%s-%s-%s %s:%s:%s' % (
                 timestamp[6:10],
                 timestamp[3:5],
                 timestamp[:2],
-                timestamp[10:],              
+                timestamp[11:13],   
+                timestamp[14:16],   
+                timestamp[17:19],   
                 )
             
             erp_pool.create({
