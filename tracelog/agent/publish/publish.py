@@ -27,6 +27,9 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 #                                Parameters
 # -----------------------------------------------------------------------------
+# Datetime format:
+DEFAULT_SERVER_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
 # Extract config file name from current name
 fullname = './openerp.cfg'
 config = ConfigParser.ConfigParser()
@@ -59,6 +62,25 @@ activity_log = open(activity_file, 'a')
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
+def odoo_datetime_format(timestamp):
+    ''' Normalize for ODOO
+    '''
+    return = '%s-%s-%s %s:%s:%s' % (
+        timestamp[6:10],
+        timestamp[3:5],
+        timestamp[:2],
+        timestamp[11:13],   
+        timestamp[14:16],   
+        timestamp[17:19],   
+        )
+
+def change_datetime_gmt(timestamp):
+    ''' Change datetime removing gap from now and GMT 0
+    '''
+    extra_gmt = datetime.now() - datetime.utcnow()
+    ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT) 
+    return (ts - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
 def log_event(activity_log, event, mode='info'):
     ''' Log event on file
     '''
@@ -121,14 +143,9 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
         timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
         mode = field_list[3].strip()
                     
-        timestamp = '%s-%s-%s %s:%s:%s' % (
-            timestamp[6:10],
-            timestamp[3:5],
-            timestamp[:2],
-            timestamp[11:13],   
-            timestamp[14:16],   
-            timestamp[17:19],   
-            )
+        # Normalize and UTC the datetime:            
+        timestamp = odoo_datetime_format(timestamp)            
+        timestamp = change_datetime_gmt(timestamp)
         
         # Create ODOO record:
         erp_pool.create({

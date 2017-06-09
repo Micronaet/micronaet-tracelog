@@ -1,0 +1,110 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* tracelog
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-09 07:14+0000\n"
+"PO-Revision-Date: 2017-06-09 08:44+0100\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: it\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. module: tracelog
+#: field:tracelog.event,user_name:0
+msgid "Username"
+msgstr "Nome utente"
+
+#. module: tracelog
+#: model:ir.actions.act_window,name:tracelog.action_tracelog_event
+#: model:ir.model,name:tracelog.model_tracelog_event
+#: model:ir.ui.menu,name:tracelog.menu_tracelog_event view:tracelog.event:0
+msgid "Tracelog event"
+msgstr "Eventi tracelog"
+
+#. module: tracelog
+#: model:ir.ui.menu,name:tracelog.menu_tracelog_management
+msgid "Management"
+msgstr "Gestione"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "Mode error"
+msgstr "Stato errore"
+
+#. module: tracelog
+#: selection:tracelog.event,mode:0
+msgid "Log out"
+msgstr "Uscita"
+
+#. module: tracelog
+#: field:tracelog.event,host_name:0
+msgid "Hostname"
+msgstr "Nome PC"
+
+#. module: tracelog
+#: model:ir.ui.menu,name:tracelog.menu_tracelog_root
+msgid "Tracelog"
+msgstr "Tracelog"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "Mode out"
+msgstr "Stato uscita"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "Group By..."
+msgstr "Raggruppa per..."
+
+#. module: tracelog
+#: selection:tracelog.event,mode:0
+msgid "Error"
+msgstr "Errore"
+
+#. module: tracelog
+#: selection:tracelog.event,mode:0
+msgid "Log in"
+msgstr "Entrata"
+
+#. module: tracelog
+#: view:tracelog.event:0 field:tracelog.event,import_id:0
+msgid "Import ID"
+msgstr "ID Importazione"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "Mode in"
+msgstr "Stato ingresso"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "Tracelog search"
+msgstr "Ricerca tracelog"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "User name"
+msgstr "Nome utente"
+
+#. module: tracelog
+#: view:tracelog.event:0 field:tracelog.event,timestamp:0
+msgid "Timestamp"
+msgstr "Timestamp"
+
+#. module: tracelog
+#: view:tracelog.event:0
+msgid "Host name"
+msgstr "Nome PC"
+
+#. module: tracelog
+#: view:tracelog.event:0 field:tracelog.event,mode:0
+msgid "Mode"
+msgstr "Modo"
