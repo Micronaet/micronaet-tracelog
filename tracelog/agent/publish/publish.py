@@ -65,14 +65,24 @@ activity_log = open(activity_file, 'a')
 def odoo_datetime_format(timestamp):
     ''' Normalize for ODOO
     '''
-    return = '%s-%s-%s %s:%s:%s' % (
-        timestamp[6:10],
-        timestamp[3:5],
-        timestamp[:2],
-        timestamp[11:13],   
-        timestamp[14:16],   
-        timestamp[17:19],   
-        )
+    try:
+        parts = timestamp.split()
+        date = parts[0].split('/')
+        if '.' in timestamp:
+            time = parts[1].split('.')
+        else: # :
+            time = parts[1].split(':')
+            
+        return '%s-%s-%s %02d:%02d:%02d' % (
+            date[2],
+            date[1],        
+            date[0],
+            int(time[0]),
+            int(time[1]),
+            int(time[2]),
+            )
+    except:
+        return False
 
 def change_datetime_gmt(timestamp):
     ''' Change datetime removing gap from now and GMT 0
@@ -81,7 +91,7 @@ def change_datetime_gmt(timestamp):
     ts = datetime.strptime(timestamp, DEFAULT_SERVER_DATETIME_FORMAT) 
     return (ts - extra_gmt).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
-def log_event(activity_log, event, mode='info'):
+def log_event(activity_log, event, mode='INFO'):
     ''' Log event on file
     '''
     activity_log.write('[%s] %s: %s\n' % (
@@ -140,11 +150,18 @@ def insert_odoo_record(erp_pool, f, parameter, temp=False):
         # Read columns:            
         user_name = field_list[0].strip()
         host_name = field_list[1].strip()
-        timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
+        win_timestamp = field_list[2].strip() # GG/MM/AAAA HH:MM:SS
         mode = field_list[3].strip()
                     
         # Normalize and UTC the datetime:            
-        timestamp = odoo_datetime_format(timestamp)            
+        timestamp = odoo_datetime_format(win_timestamp)
+        if not timestamp:
+            log_event(
+                activity_log,
+                'Error converting date: %s' % win_timestamp,
+                'ERROR',
+                )
+            continue
         timestamp = change_datetime_gmt(timestamp)
         
         # Create ODOO record:
@@ -181,7 +198,7 @@ for root, folders, files in os.walk(parameter['folder_temp']):
         log_event(
             activity_log,
             'Found temp files: %s' % f,
-            'warning',
+            'WARNING',
             )    
     break # only once!
 
