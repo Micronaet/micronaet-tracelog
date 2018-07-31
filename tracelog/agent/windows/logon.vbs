@@ -1,6 +1,6 @@
 rem Library:
 Set wshShell = CreateObject("WScript.Shell")
-Set objFSO=CreateObject("Scripting.FileSystemObject")
+Set objFSO = CreateObject("Scripting.FileSystemObject")
 Set args = Wscript.Arguments
 
 rem Variables:
@@ -24,7 +24,8 @@ strMode = args(0)
 
 rem Dynamic parameter:
 strNow = Now()
-strUserName = wshShell.ExpandEnvironmentStrings( "%USERNAME%" )
+'strUserName = wshShell.ExpandEnvironmentStrings( "%USERNAME%" )
+strUserName = CreateObject("WScript.Network").UserName
 strComputerName = wshShell.ExpandEnvironmentStrings( "%COMPUTERNAME%" )
 strLog = strUserName & strSeparator & strComputerName & strSeparator & strNow & strSeparator & strMode & vbCrLf
 
