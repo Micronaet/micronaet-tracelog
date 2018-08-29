@@ -20,20 +20,10 @@
 import os
 import sys
 import logging
-import openerp
-import openerp.netsvc as netsvc
-import openerp.addons.decimal_precision as dp
-from openerp.osv import fields, osv, expression, orm
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
-from openerp import SUPERUSER_ID
-from openerp import tools
-from openerp.tools.translate import _
-from openerp.tools.float_utils import float_round as round
-from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT, 
-    DEFAULT_SERVER_DATETIME_FORMAT, 
-    DATETIME_FORMATS_MAP, 
-    float_compare)
+import odoo
+from odoo.osv import fields, osv, expression, api
+from datetime import timedelta
+from odoo import tools
 
 
 _logger = logging.getLogger(__name__)
@@ -47,20 +37,18 @@ class TracelogEvent(orm.Model):
     _rec_name = 'timestamp'
     _order = 'timestamp desc'
     
-    _columns = {
-        'timestamp': fields.datetime('Timestamp', required=True),
-        'user_name': fields.char('Username', size=64, required=True),
-        'host_name': fields.char('Hostname', size=64, required=True),
-        'import_id': fields.char('Import ID', size=100, required=True),
-        'mode': fields.selection([
-            ('in', 'Log in'),
-            ('out', 'Log out'),
-            ('err', 'Error'),
-            ], 'Mode', required=True),
+    # -------------------------------------------------------------------------
+    # Columns:
+    # -------------------------------------------------------------------------
+    timestamp = fields.Datetime('Timestamp', required=True)
+    user_name = fields.Char('Username', size=64, required=True)
+    host_name = fields.Char('Hostname', size=64, required=True)
+    import_id = fields.Char('Import ID', size=100, required=True)
+    mode = fields.selection([
+        ('in', 'Log in'),
+        ('out', 'Log out'),
+        ('err', 'Error'),
+        ], 'Mode', required=True, default='err'),
         }
-
-    _defaults = {
-        'mode': lambda *x: 'err',
-        }            
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

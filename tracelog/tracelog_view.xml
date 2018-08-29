@@ -6,7 +6,7 @@
             <field name="name">tracelog.event.tree</field>
             <field name="model">tracelog.event</field>
             <field name="arch" type="xml">
-                <tree string="Tracelog event" editable="bottom" colors="red:mode=='err';black:mode=='in';grey:mode=='out'">        
+                <tree string="Tracelog event" editable="bottom" decoration-danger="mode=='err'" decoration-bf="mode=='in'" decoration-muted="mode=='out'">
                     <field name="timestamp" readonly="1"/>
                     <field name="mode" readonly="1" />
                     <field name="user_name" readonly="1" />
@@ -32,13 +32,11 @@
             <field name="name">tracelog.event.search</field>
             <field name="model">tracelog.event</field>
             <field name="arch" type="xml">
-                <search string="Tracelog search" version="7.0">        
+                <search string="Tracelog search">
                     <field name="timestamp" />
                     <field name="user_name" />
                     <field name="host_name" />
                     <field name="import_id" />
-                    <!--<field name="from_timestamp" filter_domain="[('timestamp','&gt;=',self)]"/>
-                    <field name="to_timestamp" filter_domain="[('timestamp','&lt;=',self)]"/>-->
                     
                     <filter name="mode_in" string="Mode in" domain="[('mode','=','in')]"/>
                     <filter name="mode_out" string="Mode out" domain="[('mode','=','out')]"/>
