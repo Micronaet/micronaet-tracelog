@@ -72,30 +72,29 @@ for record in pool_in.browse(record_ids):
     i += 1
     
     # Input:
-    timestamp = record.timestamp
-    host_name = record.host_name
+    #timestamp = record.timestamp
+    #host_name = record.host_name
     
-    item_ids = pool_out.search([
-        '|',
-        ('timestamp', '=', timestamp),
-        ('host_name', '=', host_name),
-        ])
+    #item_ids = pool_out.search([
+    #    ('timestamp', '=', timestamp),
+    #    ('host_name', '=', host_name),
+    #    ])
         
     data = {
-        'timestamp': timestamp,
-        'host_name': host_name,
+        'timestamp': record.timestamp,
+        'host_name': record.host_name,
         'user_name': record.user_name,
         'import_id': record.import_id,
         'mode': record.mode,
         }
 
-    if item_ids:
-        item_id = item_ids[0]
-        if update:
-            pool_out.write(item_id, data)
-        print '%s. Update record: %s' % (i, timestamp)
-    else:        
-        item_id = pool_out.create(data).id
-        print '%s. Create record: %s' % (i, timestamp)
+    #if item_ids:
+    #    item_id = item_ids[0]
+    #    if update:
+    #        pool_out.write(item_id, data)
+    #    print '%s. Update record: %s' % (i, timestamp)
+    #else:        
+    item_id = pool_out.create(data).id
+    print '%s. Create record' % i
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
