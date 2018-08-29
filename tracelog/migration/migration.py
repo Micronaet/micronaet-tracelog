@@ -27,7 +27,7 @@ import ConfigParser
 # Read parameters:
 # ----------------
 config = ConfigParser.ConfigParser()
-config.read(['odoo.cfg'])
+config.read(['odoo.mic.cfg'])
 
 # -----------------------------------------------------------------------------
 # Erpeek client ODOO:
