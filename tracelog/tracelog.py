@@ -21,14 +21,14 @@ import os
 import sys
 import logging
 import odoo
-from odoo.osv import fields, osv, expression, api
+from odoo import fields, models, api
 from datetime import timedelta
 from odoo import tools
 
 
 _logger = logging.getLogger(__name__)
 
-class TracelogEvent(orm.Model):
+class TracelogEvent(models.Model):
     """ Model name: TracelogEvent
     """
     
@@ -44,11 +44,10 @@ class TracelogEvent(orm.Model):
     user_name = fields.Char('Username', size=64, required=True)
     host_name = fields.Char('Hostname', size=64, required=True)
     import_id = fields.Char('Import ID', size=100, required=True)
-    mode = fields.selection([
+    mode = fields.Selection([
         ('in', 'Log in'),
         ('out', 'Log out'),
         ('err', 'Error'),
-        ], 'Mode', required=True, default='err'),
-        }
+        ], 'Mode', required=True, default='err')
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
